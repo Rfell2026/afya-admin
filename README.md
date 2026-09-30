@@ -47,6 +47,19 @@ O projeto possui uma interface administrativa responsiva, com tema claro e escur
 **Projeto:** Afya Pedagógico
 
 ## 💡 O que aprendi
+## 📸 Screenshots
+
+### Dashboard
+![Dashboard](dashboard.png)
+
+### Alunos
+![Alunos](alunos.png)
+
+### Projetos
+![Projetos](projetos.png)
+
+### Relatórios
+![Relatórios](relatorios.png)
 
 Durante o desenvolvimento do projeto, aprendi a:
 
