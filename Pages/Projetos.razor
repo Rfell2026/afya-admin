@@ -1,0 +1,251 @@
+
+@page "/projetos"
+
+@using afya_admin.Models
+@using afya_admin.Services
+@inject DadosAppService Dados
+
+<MudContainer MaxWidth="MaxWidth.False" Class="pa-4">
+
+    <MudText Typo="Typo.h4">Projetos</MudText>
+
+    <MudText Typo="Typo.body1" Class="mt-2">
+        Gerencie os projetos pedagógicos do Afya Pedagógico.
+    </MudText>
+
+    <MudPaper Elevation="1" Class="pa-4 mt-4">
+
+        <MudText Typo="Typo.h6">
+            @(projetoEmEdicao == null ? "Cadastro de Projetos" : "Editar Projeto")
+        </MudText>
+
+        <MudForm @ref="formulario" @bind-IsValid="formularioValido">
+
+            <MudGrid Class="mt-2">
+
+                <MudItem xs="12" md="6">
+                    <MudTextField T="string"
+                                  Label="Nome do projeto"
+                                  @bind-Value="nome"
+                                  Required="true"
+                                  RequiredError="Informe o nome do projeto."
+                                  Variant="Variant.Outlined" />
+                </MudItem>
+
+                <MudItem xs="12" md="6">
+                    <MudTextField T="string"
+                                  Label="Responsável"
+                                  @bind-Value="responsavel"
+                                  Required="true"
+                                  RequiredError="Informe o responsável."
+                                  Variant="Variant.Outlined" />
+                </MudItem>
+
+                <MudItem xs="12" md="8">
+                    <MudTextField T="string"
+                                  Label="Descrição do projeto"
+                                  @bind-Value="descricao"
+                                  Required="true"
+                                  RequiredError="Informe a descrição."
+                                  Lines="3"
+                                  Variant="Variant.Outlined" />
+                </MudItem>
+
+                <MudItem xs="12" md="4">
+                    <MudSelect T="string"
+                               Label="Status"
+                               @bind-Value="status"
+                               Required="true"
+                               RequiredError="Selecione o status."
+                               Variant="Variant.Outlined">
+
+                        <MudSelectItem T="string" Value="@("Pendente")">
+                            Pendente
+                        </MudSelectItem>
+
+                        <MudSelectItem T="string" Value="@("Em andamento")">
+                            Em andamento
+                        </MudSelectItem>
+
+                        <MudSelectItem T="string" Value="@("Concluído")">
+                            Concluído
+                        </MudSelectItem>
+
+                    </MudSelect>
+                </MudItem>
+
+            </MudGrid>
+
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@(projetoEmEdicao == null ? Icons.Material.Filled.Add : Icons.Material.Filled.Save)"
+                       Class="mt-4"
+                       OnClick="SalvarProjeto">
+                @(projetoEmEdicao == null ? "Cadastrar projeto" : "Salvar alterações")
+            </MudButton>
+
+            @if (projetoEmEdicao != null)
+            {
+                <MudButton Variant="Variant.Outlined"
+                           Color="Color.Secondary"
+                           Class="mt-4 ml-2"
+                           OnClick="CancelarEdicao">
+                    Cancelar
+                </MudButton>
+            }
+
+        </MudForm>
+
+    </MudPaper>
+
+    <MudPaper Elevation="1" Class="pa-4 mt-4">
+
+        <MudText Typo="Typo.h6">
+            Projetos cadastrados (@Dados.Projetos.Count)
+        </MudText>
+
+        @if (Dados.Projetos.Count == 0)
+        {
+            <MudText Typo="Typo.body2" Class="mt-3">
+                Nenhum projeto cadastrado até o momento.
+            </MudText>
+        }
+        else
+        {
+            <MudTable Items="@Dados.Projetos"
+                      Hover="true"
+                      Striped="true"
+                      Class="mt-3">
+
+                <HeaderContent>
+                    <MudTh>Projeto</MudTh>
+                    <MudTh>Responsável</MudTh>
+                    <MudTh>Descrição</MudTh>
+                    <MudTh>Status</MudTh>
+                    <MudTh>Ações</MudTh>
+                </HeaderContent>
+
+                <RowTemplate>
+                    <MudTd DataLabel="Projeto">@context.Nome</MudTd>
+                    <MudTd DataLabel="Responsável">@context.Responsavel</MudTd>
+                    <MudTd DataLabel="Descrição">@context.Descricao</MudTd>
+
+                    <MudTd DataLabel="Status">
+                        <MudChip T="string"
+                                 Color="@ObterCorStatus(context.Status)"
+                                 Size="Size.Small">
+                            @context.Status
+                        </MudChip>
+                    </MudTd>
+
+                    <MudTd DataLabel="Ações">
+                        <MudButton Variant="Variant.Outlined"
+                                   Color="Color.Primary"
+                                   Size="Size.Small"
+                                   StartIcon="@Icons.Material.Filled.Edit"
+                                   OnClick="@(() => EditarProjeto(context))">
+                            Editar
+                        </MudButton>
+
+                        <MudButton Variant="Variant.Outlined"
+                                   Color="Color.Error"
+                                   Size="Size.Small"
+                                   StartIcon="@Icons.Material.Filled.Delete"
+                                   Class="ml-2"
+                                   OnClick="@(() => ExcluirProjeto(context))">
+                            Excluir
+                        </MudButton>
+                    </MudTd>
+                </RowTemplate>
+
+            </MudTable>
+        }
+
+    </MudPaper>
+
+</MudContainer>
+
+@code {
+    private MudForm? formulario;
+    private bool formularioValido;
+
+    private string nome = "";
+    private string responsavel = "";
+    private string descricao = "";
+    private string status = "Pendente";
+
+    private Projeto? projetoEmEdicao;
+
+    private async Task SalvarProjeto()
+    {
+        if (formulario is null)
+            return;
+
+        await formulario.ValidateAsync();
+
+        if (!formularioValido)
+            return;
+
+        if (projetoEmEdicao != null)
+        {
+            projetoEmEdicao.Nome = nome.Trim();
+            projetoEmEdicao.Responsavel = responsavel.Trim();
+            projetoEmEdicao.Descricao = descricao.Trim();
+            projetoEmEdicao.Status = status;
+        }
+        else
+        {
+            Dados.Projetos.Add(new Projeto
+            {
+                Nome = nome.Trim(),
+                Responsavel = responsavel.Trim(),
+                Descricao = descricao.Trim(),
+                Status = status
+            });
+        }
+
+        CancelarEdicao();
+    }
+
+    private void EditarProjeto(Projeto projeto)
+    {
+        projetoEmEdicao = projeto;
+
+        nome = projeto.Nome;
+        responsavel = projeto.Responsavel;
+        descricao = projeto.Descricao;
+        status = projeto.Status;
+    }
+
+    private void CancelarEdicao()
+    {
+        projetoEmEdicao = null;
+
+        nome = "";
+        responsavel = "";
+        descricao = "";
+        status = "Pendente";
+
+        formularioValido = false;
+    }
+
+    private void ExcluirProjeto(Projeto projeto)
+    {
+        Dados.Projetos.Remove(projeto);
+
+        if (projetoEmEdicao == projeto)
+        {
+            CancelarEdicao();
+        }
+    }
+
+    private Color ObterCorStatus(string valor)
+    {
+        return valor switch
+        {
+            "Concluído" => Color.Success,
+            "Em andamento" => Color.Info,
+            _ => Color.Warning
+        };
+    }
+}

@@ -1,0 +1,141 @@
+@page "/relatorios"
+
+@using afya_admin.Services
+@inject DadosAppService Dados
+
+<MudContainer MaxWidth="MaxWidth.False" Class="pa-4">
+
+    <MudText Typo="Typo.h4">Relatórios</MudText>
+
+    <MudText Typo="Typo.body1" Class="mt-2">
+        Acompanhe os indicadores e o desempenho dos projetos pedagógicos.
+    </MudText>
+
+    <MudGrid Class="mt-4">
+
+        <MudItem xs="12" sm="6" md="4">
+            <MudPaper Elevation="1" Class="pa-4">
+                <MudText Typo="Typo.subtitle2" Color="Color.Secondary">
+                    Total de alunos
+                </MudText>
+
+                <MudText Typo="Typo.h4">
+                    @Dados.Alunos.Count
+                </MudText>
+
+                <MudText Typo="Typo.caption">
+                    Alunos cadastrados
+                </MudText>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" sm="6" md="4">
+            <MudPaper Elevation="1" Class="pa-4">
+                <MudText Typo="Typo.subtitle2" Color="Color.Secondary">
+                    Total de projetos
+                </MudText>
+
+                <MudText Typo="Typo.h4">
+                    @Dados.Projetos.Count
+                </MudText>
+
+                <MudText Typo="Typo.caption">
+                    Projetos cadastrados
+                </MudText>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" sm="6" md="4">
+            <MudPaper Elevation="1" Class="pa-4">
+                <MudText Typo="Typo.subtitle2" Color="Color.Secondary">
+                    Projetos concluídos
+                </MudText>
+
+                <MudText Typo="Typo.h4" Color="Color.Success">
+                    @ProjetosConcluidos
+                </MudText>
+
+                <MudText Typo="Typo.caption">
+                    Projetos finalizados
+                </MudText>
+            </MudPaper>
+        </MudItem>
+
+    </MudGrid>
+
+    <MudPaper Elevation="1" Class="pa-4 mt-4">
+
+        <MudText Typo="Typo.h6">
+            Situação dos projetos
+        </MudText>
+
+        <MudTable Items="@indicadores" Hover="true" Striped="true" Class="mt-3">
+
+            <HeaderContent>
+                <MudTh>Status</MudTh>
+                <MudTh>Quantidade</MudTh>
+            </HeaderContent>
+
+            <RowTemplate>
+                <MudTd DataLabel="Status">
+                    @context.Status
+                </MudTd>
+
+                <MudTd DataLabel="Quantidade">
+                    @context.Quantidade
+                </MudTd>
+            </RowTemplate>
+
+        </MudTable>
+
+    </MudPaper>
+
+    <MudPaper Elevation="1" Class="pa-4 mt-4">
+
+        <MudText Typo="Typo.h6">
+            Resumo geral
+        </MudText>
+
+        <MudText Typo="Typo.body2" Class="mt-3">
+            O Afya Pedagógico possui atualmente
+            <strong>@Dados.Alunos.Count</strong> aluno(s) cadastrado(s)
+            e <strong>@Dados.Projetos.Count</strong> projeto(s) pedagógico(s).
+        </MudText>
+
+    </MudPaper>
+
+</MudContainer>
+
+@code {
+
+    private int ProjetosConcluidos =>
+        Dados.Projetos.Count(p => p.Status == "Concluído");
+
+    private List<IndicadorProjeto> indicadores =>
+        new()
+        {
+            new IndicadorProjeto
+            {
+                Status = "Pendente",
+                Quantidade = Dados.Projetos.Count(p => p.Status == "Pendente")
+            },
+
+            new IndicadorProjeto
+            {
+                Status = "Em andamento",
+                Quantidade = Dados.Projetos.Count(p => p.Status == "Em andamento")
+            },
+
+            new IndicadorProjeto
+            {
+                Status = "Concluído",
+                Quantidade = Dados.Projetos.Count(p => p.Status == "Concluído")
+            }
+        };
+
+    private class IndicadorProjeto
+    {
+        public string Status { get; set; } = "";
+        public int Quantidade { get; set; }
+    }
+}

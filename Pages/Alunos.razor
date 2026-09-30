@@ -1,0 +1,203 @@
+
+@page "/alunos"
+
+@using afya_admin.Models
+@using afya_admin.Services
+@inject DadosAppService Dados
+
+<MudContainer MaxWidth="MaxWidth.False" Class="pa-4">
+
+    <MudText Typo="Typo.h4">Alunos</MudText>
+
+    <MudText Typo="Typo.body1" Class="mt-2">
+        Gerencie os alunos cadastrados no Afya Pedagógico.
+    </MudText>
+
+    <MudPaper Elevation="1" Class="pa-4 mt-4">
+
+        <MudText Typo="Typo.h6">
+            @(alunoEmEdicao == null ? "Cadastro de Alunos" : "Editar Aluno")
+        </MudText>
+
+        <MudForm @ref="formulario" @bind-IsValid="formularioValido">
+
+            <MudGrid Class="mt-2">
+
+                <MudItem xs="12" md="6">
+                    <MudTextField T="string"
+                                  Label="Nome completo"
+                                  @bind-Value="nome"
+                                  Required="true"
+                                  RequiredError="Informe o nome do aluno."
+                                  Variant="Variant.Outlined" />
+                </MudItem>
+
+                <MudItem xs="12" md="3">
+                    <MudTextField T="string"
+                                  Label="Matrícula"
+                                  @bind-Value="matricula"
+                                  Required="true"
+                                  RequiredError="Informe a matrícula."
+                                  Variant="Variant.Outlined" />
+                </MudItem>
+
+                <MudItem xs="12" md="3">
+                    <MudTextField T="string"
+                                  Label="Turma"
+                                  @bind-Value="turma"
+                                  Required="true"
+                                  RequiredError="Informe a turma."
+                                  Variant="Variant.Outlined" />
+                </MudItem>
+
+            </MudGrid>
+
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@(alunoEmEdicao == null ? Icons.Material.Filled.PersonAdd : Icons.Material.Filled.Save)"
+                       Class="mt-4"
+                       OnClick="SalvarAluno">
+                @(alunoEmEdicao == null ? "Cadastrar aluno" : "Salvar alterações")
+            </MudButton>
+
+            @if (alunoEmEdicao != null)
+            {
+                <MudButton Variant="Variant.Outlined"
+                           Color="Color.Secondary"
+                           Class="mt-4 ml-2"
+                           OnClick="CancelarEdicao">
+                    Cancelar
+                </MudButton>
+            }
+
+        </MudForm>
+
+    </MudPaper>
+
+    <MudPaper Elevation="1" Class="pa-4 mt-4">
+
+        <MudText Typo="Typo.h6">
+            Alunos cadastrados (@Dados.Alunos.Count)
+        </MudText>
+
+        @if (Dados.Alunos.Count == 0)
+        {
+            <MudText Typo="Typo.body2" Class="mt-3">
+                Nenhum aluno cadastrado até o momento.
+            </MudText>
+        }
+        else
+        {
+            <MudTable Items="@Dados.Alunos"
+                      Hover="true"
+                      Striped="true"
+                      Class="mt-3">
+
+                <HeaderContent>
+                    <MudTh>Nome</MudTh>
+                    <MudTh>Matrícula</MudTh>
+                    <MudTh>Turma</MudTh>
+                    <MudTh>Ações</MudTh>
+                </HeaderContent>
+
+                <RowTemplate>
+                    <MudTd DataLabel="Nome">@context.Nome</MudTd>
+                    <MudTd DataLabel="Matrícula">@context.Matricula</MudTd>
+                    <MudTd DataLabel="Turma">@context.Turma</MudTd>
+
+                    <MudTd DataLabel="Ações">
+                        <MudButton Variant="Variant.Outlined"
+                                   Color="Color.Primary"
+                                   Size="Size.Small"
+                                   StartIcon="@Icons.Material.Filled.Edit"
+                                   OnClick="@(() => EditarAluno(context))">
+                            Editar
+                        </MudButton>
+
+                        <MudButton Variant="Variant.Outlined"
+                                   Color="Color.Error"
+                                   Size="Size.Small"
+                                   StartIcon="@Icons.Material.Filled.Delete"
+                                   Class="ml-2"
+                                   OnClick="@(() => ExcluirAluno(context))">
+                            Excluir
+                        </MudButton>
+                    </MudTd>
+                </RowTemplate>
+
+            </MudTable>
+        }
+
+    </MudPaper>
+
+</MudContainer>
+
+@code {
+    private MudForm? formulario;
+    private bool formularioValido;
+
+    private string nome = "";
+    private string matricula = "";
+    private string turma = "";
+
+    private Aluno? alunoEmEdicao;
+
+    private async Task SalvarAluno()
+    {
+        if (formulario is null)
+            return;
+
+        await formulario.ValidateAsync();
+
+        if (!formularioValido)
+            return;
+
+        if (alunoEmEdicao != null)
+        {
+            alunoEmEdicao.Nome = nome.Trim();
+            alunoEmEdicao.Matricula = matricula.Trim();
+            alunoEmEdicao.Turma = turma.Trim();
+        }
+        else
+        {
+            Dados.Alunos.Add(new Aluno
+            {
+                Nome = nome.Trim(),
+                Matricula = matricula.Trim(),
+                Turma = turma.Trim()
+            });
+        }
+
+        CancelarEdicao();
+    }
+
+    private void EditarAluno(Aluno aluno)
+    {
+        alunoEmEdicao = aluno;
+
+        nome = aluno.Nome;
+        matricula = aluno.Matricula;
+        turma = aluno.Turma;
+    }
+
+    private void CancelarEdicao()
+    {
+        alunoEmEdicao = null;
+
+        nome = "";
+        matricula = "";
+        turma = "";
+
+        formularioValido = false;
+    }
+
+    private void ExcluirAluno(Aluno aluno)
+    {
+        Dados.Alunos.Remove(aluno);
+
+        if (alunoEmEdicao == aluno)
+        {
+            CancelarEdicao();
+        }
+    }
+}

@@ -1,0 +1,373 @@
+@page "/"
+
+<PageTitle>Afya Pedagógico</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.False" Class="pa-4">
+
+    <MudStack Spacing="2" Class="mb-6">
+
+        <MudText Typo="Typo.h4">
+            Afya Pedagógico
+        </MudText>
+
+        <MudText Typo="Typo.body1" Color="Color.Secondary">
+            Bem-vindo ao painel administrativo.
+            Acompanhe os indicadores e projetos da plataforma.
+        </MudText>
+
+    </MudStack>
+
+
+    <!-- INDICADORES -->
+
+    <MudGrid Spacing="4">
+
+        <MudItem xs="12" sm="6" lg="3">
+
+            <MudPaper Elevation="1" Class="pa-4">
+
+                <MudText Typo="Typo.subtitle2" Color="Color.Secondary">
+                    Receita total
+                </MudText>
+
+                <MudText Typo="Typo.h5">
+                    R$ 48.500
+                </MudText>
+
+                <MudText Typo="Typo.caption" Color="Color.Success">
+                    +12% este mês
+                </MudText>
+
+                <MudProgressLinear Value="72"
+                                   Color="Color.Success"
+                                   Rounded="true"
+                                   Class="mt-3" />
+
+            </MudPaper>
+
+        </MudItem>
+
+
+        <MudItem xs="12" sm="6" lg="3">
+
+            <MudPaper Elevation="1" Class="pa-4">
+
+                <MudText Typo="Typo.subtitle2" Color="Color.Secondary">
+                    Clientes
+                </MudText>
+
+                <MudText Typo="Typo.h5">
+                    1.250
+                </MudText>
+
+                <MudText Typo="Typo.caption" Color="Color.Success">
+                    +8% este mês
+                </MudText>
+
+                <MudProgressLinear Value="68"
+                                   Color="Color.Info"
+                                   Rounded="true"
+                                   Class="mt-3" />
+
+            </MudPaper>
+
+        </MudItem>
+
+
+        <MudItem xs="12" sm="6" lg="3">
+
+            <MudPaper Elevation="1" Class="pa-4">
+
+                <MudText Typo="Typo.subtitle2" Color="Color.Secondary">
+                    Projetos ativos
+                </MudText>
+
+                <MudText Typo="Typo.h5">
+                    32
+                </MudText>
+
+                <MudText Typo="Typo.caption" Color="Color.Info">
+                    Em andamento
+                </MudText>
+
+                <MudProgressLinear Value="80"
+                                   Color="Color.Info"
+                                   Rounded="true"
+                                   Class="mt-3" />
+
+            </MudPaper>
+
+        </MudItem>
+
+
+        <MudItem xs="12" sm="6" lg="3">
+
+            <MudPaper Elevation="1" Class="pa-4">
+
+                <MudText Typo="Typo.subtitle2" Color="Color.Secondary">
+                    Meta atingida
+                </MudText>
+
+                <MudText Typo="Typo.h5">
+                    85%
+                </MudText>
+
+                <MudProgressLinear Value="85"
+                                   Color="Color.Success"
+                                   Rounded="true"
+                                   Class="mt-3" />
+
+            </MudPaper>
+
+        </MudItem>
+
+    </MudGrid>
+
+
+    <!-- GRÁFICOS -->
+
+    <MudGrid Spacing="4" Class="mt-2">
+
+        <!-- RECEITA X META -->
+
+        <MudItem xs="12" md="8">
+
+            <MudPaper Elevation="1" Class="pa-4">
+
+                <MudText Typo="Typo.h6">
+                    Receita x Meta
+                </MudText>
+
+                <MudText Typo="Typo.body2" Color="Color.Secondary">
+                    Acompanhamento mensal da receita em relação à meta.
+                </MudText>
+
+                <MudChart T="double"
+                          ChartType="ChartType.Donut"
+                          ChartSeries="@seriesReceita"
+                          XAxisLabels="@meses"
+                          Width="100%"
+                          Height="300px"
+                          Class="mt-4" />
+
+            </MudPaper>
+
+        </MudItem>
+
+
+        <!-- CLIENTES -->
+
+        <MudItem xs="12" md="4">
+
+            <MudPaper Elevation="1" Class="pa-4">
+
+                <MudText Typo="Typo.h6">
+                    Clientes
+                </MudText>
+
+                <MudText Typo="Typo.body2" Color="Color.Secondary">
+                    Distribuição dos clientes.
+                </MudText>
+
+                <MudChart T="double"
+          ChartType="ChartType.Pie"
+          ChartSeries="@seriesClientes"
+          ChartLabels="@rotulosClientes"
+          Width="100%"
+          Height="260px"
+          Class="mt-4" />
+
+            </MudPaper>
+
+        </MudItem>
+
+    </MudGrid>
+
+
+    <!-- PROJETOS E ATIVIDADES -->
+
+    <MudGrid Spacing="4" Class="mt-2">
+
+        <!-- PROGRESSO DOS PROJETOS -->
+
+        <MudItem xs="12" md="6">
+
+            <MudPaper Elevation="1" Class="pa-4">
+
+                <MudText Typo="Typo.h6">
+                    Progresso dos projetos
+                </MudText>
+
+                <MudText Typo="Typo.body2"
+                         Color="Color.Secondary"
+                         Class="mb-4">
+                    Situação atual dos projetos pedagógicos.
+                </MudText>
+
+                <MudStack Spacing="3">
+
+                    <div>
+
+                        <MudText Typo="Typo.body2">
+                            Projeto Integração
+                        </MudText>
+
+                        <MudProgressLinear Value="85"
+                                           Color="Color.Success"
+                                           Rounded="true"
+                                           Class="mt-1" />
+
+                    </div>
+
+
+                    <div>
+
+                        <MudText Typo="Typo.body2">
+                            Projeto Capacitação
+                        </MudText>
+
+                        <MudProgressLinear Value="65"
+                                           Color="Color.Info"
+                                           Rounded="true"
+                                           Class="mt-1" />
+
+                    </div>
+
+
+                    <div>
+
+                        <MudText Typo="Typo.body2">
+                            Projeto Inovação
+                        </MudText>
+
+                        <MudProgressLinear Value="45"
+                                           Color="Color.Warning"
+                                           Rounded="true"
+                                           Class="mt-1" />
+
+                    </div>
+
+                </MudStack>
+
+            </MudPaper>
+
+        </MudItem>
+
+
+        <!-- ATIVIDADES RECENTES -->
+
+        <MudItem xs="12" md="6">
+
+            <MudPaper Elevation="1" Class="pa-4">
+
+                <MudText Typo="Typo.h6">
+                    Atividades recentes
+                </MudText>
+
+                <MudList T="string" Dense="true">
+
+                    <MudListItem T="string">
+                        Novo projeto pedagógico cadastrado
+                    </MudListItem>
+
+                    <MudListItem T="string">
+                        Novo aluno adicionado à plataforma
+                    </MudListItem>
+
+                    <MudListItem T="string">
+                        Projeto Integração atualizado
+                    </MudListItem>
+
+                    <MudListItem T="string">
+                        Relatório mensal atualizado
+                    </MudListItem>
+
+                </MudList>
+
+            </MudPaper>
+
+        </MudItem>
+
+    </MudGrid>
+
+</MudContainer>
+
+
+@code {
+
+    // MESES DO GRÁFICO
+
+    private readonly string[] meses =
+    {
+        "Jan",
+        "Fev",
+        "Mar",
+        "Abr",
+        "Mai",
+        "Jun",
+        "Jul",
+        "Ago"
+    };
+
+
+    // GRÁFICO RECEITA X META
+
+    private readonly List<ChartSeries<double>> seriesReceita =
+new()
+{
+    new ChartSeries<double>
+    {
+        Name = "Receita",
+        Data = new double[]
+        {
+            28000,
+            32000,
+            35000,
+            37000,
+            41000,
+            43000,
+            45500,
+            48500
+        }
+    },
+
+    new ChartSeries<double>
+    {
+        Name = "Meta",
+        Data = new double[]
+        {
+            30000,
+            33000,
+            35000,
+            38000,
+            40000,
+            42000,
+            45000,
+            50000
+        }
+    }
+};
+
+private readonly List<ChartSeries<double>> seriesClientes =
+new()
+{
+    new ChartSeries<double>
+    {
+        Name = "Clientes",
+        Data = new double[]
+        {
+            45,
+            30,
+            25
+        }
+    }
+};
+
+private readonly string[] rotulosClientes =
+{
+    "Ativos",
+    "Novos",
+    "Inativos"
+};
+
+}
